@@ -19,6 +19,7 @@ from django.conf import settings
 from flexstart import settings
 from registration import urls
 from core import urls
+from services import urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,6 +28,8 @@ urlpatterns = [
     path("accounts/", include("registration.urls")),
     # CORE URLs
     path("", include("core.urls")),
+    # SERVICES URLs
+    path("", include("services.urls")),
 ]
 
 if settings.DEBUG:

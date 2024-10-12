@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from contact.forms import ContactForm
+from services.models import ServiceDetail, ServicesList
 
 # Create your views here.
 class Home(TemplateView):
@@ -11,6 +12,8 @@ class Home(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = ContactForm()
+        context["services"] = ServicesList.objects.all()
+        context["services_detail"] = ServiceDetail.objects.all()
         return context
 
     def post(self, request, *args, **kwargs):
@@ -28,9 +31,6 @@ class Blog(TemplateView):
 
 class BlogDetails(TemplateView):
     template_name = "core/blog-details.html"
-
-class Service(TemplateView):
-    template_name = "core/service-details.html"
 
 class Portfolio(TemplateView):
     template_name = "core/portfolio-details.html"
