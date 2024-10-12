@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from contact.forms import ContactForm
 from services.models import ServiceDetail, ServicesList
+from portfolio.models import Project
 
 # Create your views here.
 class Home(TemplateView):
@@ -14,6 +15,7 @@ class Home(TemplateView):
         context['form'] = ContactForm()
         context["services"] = ServicesList.objects.all()
         context["services_detail"] = ServiceDetail.objects.all()
+        context["projects"] = Project.objects.all()
         return context
 
     def post(self, request, *args, **kwargs):
@@ -31,9 +33,6 @@ class Blog(TemplateView):
 
 class BlogDetails(TemplateView):
     template_name = "core/blog-details.html"
-
-class Portfolio(TemplateView):
-    template_name = "core/portfolio-details.html"
 
 class Status202(TemplateView):
     template_name = "core/status-200.html"
