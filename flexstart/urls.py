@@ -21,6 +21,7 @@ from registration import urls
 from core import urls
 from services import urls
 from portfolio import urls
+from testimonials import urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,6 +34,8 @@ urlpatterns = [
     path("", include("services.urls")),
     # PORTFOLIO URLs
     path("", include("portfolio.urls")),
+    # TESTIMONIALS URLs
+    path("", include("testimonials.urls")),
 ]
 
 if settings.DEBUG:
