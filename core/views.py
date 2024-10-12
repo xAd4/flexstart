@@ -4,10 +4,9 @@ from django.views.generic import TemplateView
 from contact.forms import ContactForm
 
 # Create your views here.
-
 class Home(TemplateView):
     template_name = "core/index.html"
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('status200')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -17,9 +16,9 @@ class Home(TemplateView):
     def post(self, request, *args, **kwargs):
         form = ContactForm(request.POST)
         if form.is_valid():
-            contact = form.save(commit=False)  # No guarda aún la instancia en la BD
-            contact.user = request.user  # Asigna el usuario autenticado
-            contact.save()  # Ahora guarda la instancia con el usuario
+            contact = form.save(commit=False) 
+            contact.user = request.user  
+            contact.save()  
             return redirect(self.success_url)
         else:
             return self.render_to_response(self.get_context_data(form=form))
@@ -35,3 +34,6 @@ class Service(TemplateView):
 
 class Portfolio(TemplateView):
     template_name = "core/portfolio-details.html"
+
+class Status202(TemplateView):
+    template_name = "core/status-200.html"
