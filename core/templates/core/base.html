@@ -81,7 +81,7 @@
                     </li>
         
                     <li>
-                      <a class="dropdown-item d-flex align-items-center" href="#" onclick="document.getElementById('logout-form').submit();"> Cerrar sesión</a>
+                      <a class="dropdown-item d-flex align-items-center" href="#" onclick="document.getElementById('logout-form').submit();">Log Out</a>
                       <form id="logout-form" method="post" action="{% url 'logout' %}" style="display: none;">
                           {% csrf_token %}
                       </form>

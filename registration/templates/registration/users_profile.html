@@ -17,7 +17,7 @@
                 <img src="{{ user.profile.avatar.url }}" alt="Profile" class="rounded-circle"/>
               {% else %}
               {% endif %}
-              <h2>{{ user.profile.fullName|default:"No Full Name" }}</h2>
+              <h2>{{ user.profile.fullName|default:"No Full Name" }} {% if user.is_staff %} <h4 style="color:green;"> Admin </h4> {% endif %}</h2>
               <h3>{{ user.profile.job|default:"No Job Title" }}</h3>
               <div class="social-links mt-2">
                 {% if user.profile.twitter %}
@@ -151,13 +151,6 @@
                     </div>
 
                     <div class="row mb-3">
-                      <label for="bio" class="col-md-4 col-lg-3 col-form-label">GitHub</label>
-                      <div class="col-md-8 col-lg-9">
-                        {{ form.url }}
-                      </div>
-                    </div>
-
-                    <div class="row mb-3">
                       <label for="company" class="col-md-4 col-lg-3 col-form-label">Company</label>
                       <div class="col-md-8 col-lg-9">
                         {{ form.company }}
@@ -193,9 +186,9 @@
                     </div>
 
                     <div class="row mb-3">
-                      <label for="email" class="col-md-4 col-lg-3 col-form-label">Email</label>
+                      <label for="github" class="col-md-4 col-lg-3 col-form-label">GitHub Profile</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="email" type="email" class="form-control" id="email" value="{{ user.email }}" readonly/>
+                        {{ form.url }}
                       </div>
                     </div>
 
