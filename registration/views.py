@@ -4,6 +4,7 @@ from django.views.generic import CreateView, UpdateView, TemplateView
 from .forms import FormSignUpWithEmail, ProfileEmailForm, ProfileForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.contrib import messages
 from .models import Profile
 
 # System Sign Up
@@ -69,5 +70,13 @@ class EmailEditView(UpdateView):
     
     def get_form(self, form_class=None):
         form = super(EmailEditView, self).get_form(form_class)
-        form.fields["email"].widget = forms.EmailInput(attrs={"class": "form-control mb-2","placeholder": "Email"})
+        form.fields["email"].widget = forms.EmailInput(attrs={"class": "form-control mb-2", "placeholder": "Email"})
         return form
+
+    def form_valid(self, form):
+        messages.success(self.request, "Email updated successfully!")  # Mensaje de éxito
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Please correct the error below.")  # Mensaje de error
+        return super().form_invalid(form)  # Asegúrate de que esto retorna el renderizado con errores
