@@ -5,6 +5,7 @@ from contact.forms import ContactForm
 from services.models import ServiceDetail, ServicesList
 from portfolio.models import Project
 from testimonials.models import Testimonial
+from registration.models import Profile
 
 # Create your views here.
 class Home(TemplateView):
@@ -18,6 +19,7 @@ class Home(TemplateView):
         context["services_detail"] = ServiceDetail.objects.all()
         context["projects"] = Project.objects.all()
         context["testimonials"] = Testimonial.objects.all()
+        context["profiles"]  = Profile.objects.all()
         return context
 
     def post(self, request, *args, **kwargs):

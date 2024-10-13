@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'services',
     'portfolio',
     'testimonials',
+    'profiles',
 ]
 
 MIDDLEWARE = [

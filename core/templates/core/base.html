@@ -55,14 +55,43 @@
           <li><a href="{% url 'home' %}#team">Team</a></li>
           <li><a href="{% url 'blog' %}">Blog</a></li>
           <li><a href="{% url 'home' %}#contact">Contact</a></li>
-          {% if request.user.is_authenticated %}
-                
-                <li>
-                  <a href="#" onclick="document.getElementById('logout-form').submit();"> Cerrar sesión <i></i></a>
-                  <form id="logout-form" method="post" action="{% url 'logout' %}" style="display: none;">
-                      {% csrf_token %}
-                  </form>
-              </li>
+          {% if request.user.is_authenticated %} 
+              <ul class="d-flex align-items-center">
+                <li class="nav-item dropdown pe-3">
+        
+                  <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                    <span class="d-none d-md-block dropdown-toggle ps-2">Profile</span>
+                  </a><!-- End Profile Iamge Icon -->
+        
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                    <li class="dropdown-header">
+                      <h6>Account Info</h6>
+                    </li>
+                    <li>
+                      <hr class="dropdown-divider">
+                    </li>
+        
+                    <li>
+                      <a class="dropdown-item d-flex align-items-start" href="{% url 'profile-demo' %}">
+                        <span>My Profile</span>
+                      </a>
+                    </li>
+                    <li>
+                      <hr class="dropdown-divider">
+                    </li>
+        
+                    <li>
+                      <a class="dropdown-item d-flex align-items-center" href="#" onclick="document.getElementById('logout-form').submit();"> Cerrar sesión</a>
+                      <form id="logout-form" method="post" action="{% url 'logout' %}" style="display: none;">
+                          {% csrf_token %}
+                      </form>
+                  </li>
+        
+                  </ul><!-- End Profile Dropdown Items -->
+                </li><!-- End Profile Nav -->
+        
+              </ul>
+
                 {% else %}
                 <a href="{% url 'login' %}">
                   <i class="fa fa-user" aria-hidden="true"></i>
