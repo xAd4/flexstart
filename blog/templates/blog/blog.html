@@ -60,7 +60,7 @@
                     <ul>
                       <li class="d-flex align-items-center">
                         <i class="bi bi-person"></i>
-                        <a href="{% url 'blog-details' post.id %}">{{post.author}}</a>
+                        <a href="{% url 'blog-details' post.id %}">{{post.author.fullName}}</a>
                       </li>
                       <li class="d-flex align-items-center">
                         <i class="bi bi-clock"></i>

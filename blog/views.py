@@ -34,26 +34,38 @@ class BlogDetails(DetailView):
         context['form'] = CommentForm()
         context["tags"] = Tag.objects.all()
         context['comment_count'] = self.object.comment_set.count()
+        context['comments'] = self.object.comment_set.filter(parent__isnull=True)  # Solo los comentarios principales
         return context
     
     def post(self, request, *args, **kwargs):
         post = self.get_object()
-
         form = CommentForm(request.POST)
         
         if form.is_valid():
             comment = form.save(commit=False)
             comment.post = post
             
-            profile = get_object_or_404(Profile, user=request.user) 
+            # Asignar el perfil del usuario autenticado
+            profile = get_object_or_404(Profile, user=request.user)
             comment.user_published = profile 
+            
+            # Obtener el comentario padre (si es una respuesta)
+            parent_id = request.POST.get('parent')
+            if parent_id:
+                try:
+                    parent_comment = Comment.objects.get(id=parent_id)
+                    comment.parent = parent_comment
+                except Comment.DoesNotExist:
+                    pass  # Si el comentario padre no existe, se ignora
             
             comment.save()
             return redirect('blog-details', pk=post.pk)
 
+        # Si el formulario no es válido, renderizar la página con errores
         context = self.get_context_data()
         context['form'] = form
         return self.render_to_response(context)
+
 
 
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
