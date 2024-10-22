@@ -1,0 +1,17 @@
+<form method="post">
+  {% csrf_token %}
+
+  <h4>Post Comment</h4>
+  <p>Your email address will not be published. Required fields are marked *</p>
+
+  <div class="row">
+    <div class="col form-group">
+      {{ form.comment }}
+      <!-- Este renderiza el campo 'comment' con los estilos aplicados en el formulario de Django -->
+    </div>
+  </div>
+
+  <div class="text-center">
+    <button type="submit" class="btn btn-primary">Post Comment</button>
+  </div>
+</form>

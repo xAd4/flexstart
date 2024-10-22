@@ -1,0 +1,202 @@
+{% extends "core/base.html" %}
+{% block content %}
+{% load static %}
+
+<main class="main">
+
+  <!-- Page Title -->
+  <div class="page-title">
+    <div class="heading">
+      <div class="container">
+        <div class="row d-flex justify-content-center text-center">
+          <div class="col-lg-8">
+            <h1>Blog Details</h1>
+            <p class="mb-0">Odio et unde deleniti. Deserunt numquam exercitationem. Officiis quo odio sint voluptas consequatur ut a odio voluptatem. Sit dolorum debitis veritatis natus dolores. Quasi ratione sint. Sit quaerat ipsum dolorem.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav class="breadcrumbs">
+      <div class="container">
+        <ol>
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li class="current">Blog Details</li>
+        </ol>
+      </div>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <div class="container">
+    <div class="row">
+
+      <div class="col-lg-8">
+
+        <!-- Blog Details Section -->
+        <section id="blog-details" class="blog-details section">
+          <div class="container">
+
+            <article class="article">
+
+              <div class="post-img">
+                <img src="{{posts.image.url}}" alt="" class="img-fluid"> 
+              </div>
+
+              <h2 class="title">{{posts.title}}</h2>
+
+              <div class="meta-top">
+                <ul>
+                  <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="#">{{posts.author}}</a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="#"><time datetime="2020-01-01">{{posts.created_at}}</time></a></li>
+                </ul>
+              </div><!-- End meta top -->
+
+              <div class="content">
+                <p>
+                  {{posts.content|linebreaksbr}}
+                </p>
+              </div><!-- End post content -->
+
+              <div class="meta-bottom">
+                <i class="bi bi-folder"></i>
+                <ul class="cats">
+                  {% for tags in posts.tags.all %}
+                  <li><a href="#">{{tags|join:", "}}</a></li>
+                  {% endfor %}
+                </ul>
+              </div><!-- End meta bottom -->
+
+            </article>
+
+          </div>
+        </section><!-- /Blog Details Section -->
+
+        <!-- Blog Author Section -->
+        <section id="blog-author" class="blog-author section">
+
+          <div class="container">
+            <div class="author-container d-flex align-items-center">
+              <img src="{{posts.author.avatar.url}}" class="rounded-circle flex-shrink-0" alt=""> 
+              <div>
+                <h3>{{posts.author.fullName}}</h3>
+                <h5>{{posts.author.job}}</h5>
+                <p>
+                  {{posts.author.bio}}
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </section><!-- /Blog Author Section -->
+
+        <!-- Blog Comments Section -->
+        <section id="blog-comments" class="blog-comments section">
+
+          <div class="container">
+
+            <h4 class="comments-count">{{ comment_count }} Comments</h4>
+
+            {% load comment %} {% get_comment_list object as comments %}
+						{% for comment in comments %}
+            <div id="comment-1" class="comment">
+              <div class="d-flex">
+                <div class="comment-img">
+                  {% if comment.user_published.avatar %}
+                      <img src="{{ comment.user_published.avatar.url }}" alt="">
+                  {% else %}
+                      <img src="{% static 'core/assets/img/avatardefect.png' %}" alt="Default Avatar"> <!-- Cambia la ruta por la de tu imagen por defecto -->
+                  {% endif %}
+              </div>
+                <div>
+                  <h5><a href="">{{comment.user_published.fullName}}</a> <a href="#" class="reply"><i class="bi bi-reply-fill"></i> Reply</a></h5>
+                  <time datetime="2020-01-01">{{comment.created_at}}</time>
+                  <p>
+                    {{comment.comment}}
+                  </p>
+                  {% if request.user.is_authenticated and comment.user_published.user == request.user or request.user.is_superuser %}
+                  <a href="{% url 'comment-delete' comment.id %}"><i class="fa fa-warning"></i>Delete</a>
+                  {% endif %}
+                </div>
+              </div>
+            </div><!-- End comment #1 -->
+            {% endfor %}
+          </div>
+
+        </section><!-- /Blog Comments Section -->
+
+        <!-- Comment Form Section -->
+        <section id="comment-form" class="comment-form section">
+          <div class="container">
+
+            {% if request.user.is_authenticated %} 
+            {% load form_comment %} {% show_comment_form %}
+            {% else %}
+            <section class="error-page section">
+              <div class="container">
+                <div class="row">
+                <div class="col-lg-10">
+                  <!-- Error Inner -->
+                  <div class="error-inner">
+                    <span
+                    >
+                    Oop's you can't send comments. You need log in</span
+                    >
+                    <br/>
+                  <button type="submit" class="btn mt-2"><a href="{% url 'login' %}">Log In</a></button>
+                  </div>
+                  <!--/ End Error Inner -->
+                </div>
+                </div>
+              </div>
+              </section>	
+            {% endif %}
+
+          </div>
+        </section><!-- /Comment Form Section -->
+
+      </div>
+
+      <div class="col-lg-4 sidebar">
+
+        <div class="widgets-container">
+
+          <!-- Search Widget -->
+          <div class="search-widget widget-item">
+
+            <h3 class="widget-title">Search</h3>
+            <form action="">
+              <input type="text">
+              <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+            </form>
+
+          </div><!--/Search Widget -->
+
+          <!-- Tags Widget -->
+          <div class="tags-widget widget-item">
+
+            <h3 class="widget-title">Tags</h3>
+            <ul>
+              <li><a href="#">App</a></li>
+              <li><a href="#">IT</a></li>
+              <li><a href="#">Business</a></li>
+              <li><a href="#">Mac</a></li>
+              <li><a href="#">Design</a></li>
+              <li><a href="#">Office</a></li>
+              <li><a href="#">Creative</a></li>
+              <li><a href="#">Studio</a></li>
+              <li><a href="#">Smart</a></li>
+              <li><a href="#">Tips</a></li>
+              <li><a href="#">Marketing</a></li>
+            </ul>
+
+          </div><!--/Tags Widget -->
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+{% endblock content %}

@@ -22,6 +22,7 @@ from core import urls
 from services import urls
 from portfolio import urls
 from testimonials import urls
+from blog import urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,6 +37,8 @@ urlpatterns = [
     path("", include("portfolio.urls")),
     # TESTIMONIALS URLs
     path("", include("testimonials.urls")),
+    # BLOG URLs
+    path("", include("blog.urls")),
 ]
 
 if settings.DEBUG:

@@ -32,11 +32,6 @@ class Home(TemplateView):
         else:
             return self.render_to_response(self.get_context_data(form=form))
 
-class Blog(TemplateView):
-    template_name = "core/blog.html"
-
-class BlogDetails(TemplateView):
-    template_name = "core/blog-details.html"
 
 class Status202(TemplateView):
     template_name = "core/status-200.html"
