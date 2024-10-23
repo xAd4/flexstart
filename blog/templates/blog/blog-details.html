@@ -102,95 +102,123 @@
 
         <!-- Blog Comments Section -->
         <!-- Blog Comments Section -->
-<section id="blog-comments" class="blog-comments section">
-  <div class="container">
-    <h4 class="comments-count">{{ comment_count }} Comments</h4>
+        <section id="blog-comments" class="blog-comments section">
+          <div class="container">
+            <h4 class="comments-count">{{ comment_count }} Comments</h4>
 
-    {% load comment %}
-    {% get_comment_list object as comments %}
-    
-    {% for comment in comments %}
-    <div id="comment-{{ comment.id }}" class="comment {% if comment.parent %}comment-reply{% endif %}">
-      <div class="d-flex">
-        <div class="comment-img">
-          {% if comment.user_published.avatar %}
-          <img src="{{ comment.user_published.avatar.url }}" alt="" />
-          {% else %}
-          <img src="{% static 'core/assets/img/avatardefect.png' %}" alt="Default Avatar" />
-          {% endif %}
-        </div>
-        <div>
-          <h5>
-            <a href="">{{ comment.user_published.fullName }}</a>
-            <a href="#" class="reply" data-comment-id="{{ comment.id }}">
-              <i class="bi bi-reply-fill"></i> Reply
-            </a>
-          </h5>
-          <time datetime="{{ comment.created_at }}">{{ comment.created_at }}</time>
-          <p>{{ comment.comment }}</p>
-          
-          {% if request.user.is_authenticated and comment.user_published.user == request.user or request.user.is_superuser %}
-          <a href="{% url 'comment-delete' comment.id %}">
-            <i class="fa fa-warning"></i> Delete
-          </a>
-          {% endif %}
-        </div>
-      </div>
+            {% load comment %} {% get_comment_list object as comments %} 
+            {% for comment in comments %}
+            <div
+              id="comment-{{ comment.id }}"
+              class="comment {% if comment.parent %} comment-reply {% endif %}"
+            >
+              <div class="d-flex">
+                <div class="comment-img">
+                  {% if comment.user_published.avatar %}
+                  <img src="{{ comment.user_published.avatar.url }}" alt="" />
+                  {% else %}
+                  <img
+                    src="{% static 'core/assets/img/avatardefect.png' %}"
+                    alt="Default Avatar"
+                  />
+                  {% endif %}
+                </div>
+                <div>
+                  <h5>
+                    <a href="">{{ comment.user_published.fullName }}</a>
+                  </h5>
+                  <time datetime="{{ comment.created_at }}"
+                    >{{ comment.created_at }}</time
+                  >
+                  <p>{{ comment.comment }}</p>
 
-      <!-- Mostrar respuestas de forma recursiva -->
-      {% with replies=comment.get_replies.all %}
-        {% if replies %}
-        <div class="replies">
-          {% for reply in replies %}
-          <div id="comment-reply-{{ reply.id }}" class="comment comment-reply">
-            <div class="d-flex">
-              <div class="comment-img">
-                {% if reply.user_published.avatar %}
-                <img src="{{ reply.user_published.avatar.url }}" alt="" />
-                {% else %}
-                <img src="{% static 'core/assets/img/avatardefect.png' %}" alt="Default Avatar" />
-                {% endif %}
+                  {% if request.user.is_authenticated and comment.user_published.user == request.user or request.user.is_superuser %}
+                  <a href="{% url 'comment-delete' comment.id %}">
+                    <i class="fa fa-warning"></i> Delete
+                  </a>
+                  {% endif %}
+                </div>
               </div>
-              <div>
-                <h5><a href="#">{{ reply.user_published.fullName }}</a></h5>
-                <time datetime="{{ reply.created_at }}">{{ reply.created_at }}</time>
-                <p>{{ reply.comment }}</p>
+
+              <!-- Mostrar respuestas de forma recursiva 
+              {% with replies=comment.get_replies.all %} {% if replies %}
+              <div class="replies">
+                {% for reply in replies %}
+                <div
+                  id="comment-reply-{{ reply.id }}"
+                  class="comment comment-reply"
+                >
+                  <div class="d-flex">
+                    <div class="comment-img">
+                      {% if reply.user_published.avatar %}
+                      <img src="{{ reply.user_published.avatar.url }}" alt="" />
+                      {% else %}
+                      <img
+                        src="{% static 'core/assets/img/avatardefect.png' %}"
+                        alt="Default Avatar"
+                      />
+                      {% endif %}
+                    </div>
+                    <div>
+                      <h5>
+                        <a href="#">{{ reply.user_published.fullName }}</a>
+                      </h5>
+                      <time datetime="{{ reply.created_at }}"
+                        >{{ reply.created_at }}</time
+                      >
+                      <p>{{ reply.comment }}</p>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
               </div>
+              {% endif %} 
+              {% endwith %}
             </div>
+            -->
+            <!-- Fin de comentario principal -->
+            {% endfor %}
+
+            <!-- Formulario de respuesta, inicialmente oculto 
+            <form
+              method="post"
+              action="{% url 'blog-details' object.id %}"
+              style="display: none"
+              id="reply-form"
+            >
+              {% csrf_token %}
+              <br />
+              <h4>Reply to Comment</h4>
+              <p>
+                Your email address will not be published. Required fields are
+                marked *
+              </p>
+
+              <div class="row">
+                <div class="col form-group">
+                  <!-- El campo de comentario de la respuesta 
+                  <textarea
+                    name="comment"
+                    placeholder="Reply..."
+                    class="form-control"
+                    required
+                  ></textarea>
+                </div>
+              </div>
+
+              <!-- Campo oculto para capturar el comentario padre 
+              <input type="hidden" name="parent" id="reply-parent" />
+
+              <div class="text-center">
+                <button type="submit" class="mt-3 btn btn-primary">
+                  Reply
+                </button>
+              </div>
+            </form>
           </div>
-          {% endfor %}
-        </div>
-        {% endif %}
-      {% endwith %}
-    </div>
-    <!-- Fin de comentario principal -->
-    {% endfor %}
-
-    <!-- Formulario de respuesta, inicialmente oculto -->
-    <form method="post" action="{% url 'blog-details' object.id %}" style="display:none;" id="reply-form">
-      {% csrf_token %}
-      <br />
-      <h4>Reply to Comment</h4>
-      <p>Your email address will not be published. Required fields are marked *</p>
-
-      <div class="row">
-        <div class="col form-group">
-          <!-- El campo de comentario de la respuesta -->
-          <textarea name="comment" placeholder="Reply..." class="form-control" required></textarea>
-        </div>
-      </div>
-
-      <!-- Campo oculto para capturar el comentario padre -->
-      <input type="hidden" name="parent" id="reply-parent">
-
-      <div class="text-center">
-        <button type="submit" class="mt-3 btn btn-primary">Reply</button>
-      </div>
-    </form>
-
-  </div>
-</section>
-<!-- /Blog Comments Section -->
+          -->
+        </section>
+        <!-- /Blog Comments Section -->
 
         <!-- /Blog Comments Section -->
 
@@ -242,27 +270,28 @@
 </main>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll('.reply').forEach(function(element) {
-      element.addEventListener('click', function(e) {
+  /*
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".reply").forEach(function (element) {
+      element.addEventListener("click", function (e) {
         e.preventDefault();
-        var commentId = this.getAttribute('data-comment-id');
-        var form = document.getElementById('reply-form');
-        var parentInput = document.getElementById('reply-parent');
-        
+        var commentId = this.getAttribute("data-comment-id");
+        var form = document.getElementById("reply-form");
+        var parentInput = document.getElementById("reply-parent");
+
         // Set the parent comment ID in the hidden input
         parentInput.value = commentId;
-        
+
         // Move the form under the comment being replied to
-        var commentDiv = document.getElementById('comment-' + commentId);
+        var commentDiv = document.getElementById("comment-" + commentId);
         commentDiv.appendChild(form);
-        
+
         // Display the form
-        form.style.display = 'block';
+        form.style.display = "block";
       });
     });
   });
-  
+  */
 </script>
 
 {% endblock content %}

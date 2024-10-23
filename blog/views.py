@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.core.paginator import Paginator
 from django.urls import reverse_lazy
+from django.db.models import Q
 from django.views.generic import ListView, DetailView, DeleteView, CreateView
 from django.utils.decorators import method_decorator
 from django.contrib.admin.views.decorators import staff_member_required
@@ -15,13 +17,36 @@ class Blog(ListView):
     model = Post
     context_object_name = "posts"
     template_name = "blog/blog.html"
+    paginate_by = 3 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["tags"] = Tag.objects.all()
 
+        # Agrega la cuenta de comentarios para cada post
         for post in context['posts']:
             post.comment_count = post.comment_set.count()
+        
+        return context
+
+class BlogSearch(ListView):
+    model = Post
+    context_object_name = "posts"
+    template_name = "blog/blog_search_results.html"
+    paginate_by = 3  
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Post.objects.filter(
+                Q(title__icontains=query)
+            ).distinct()
+        return Post.objects.none()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["tags"] = Tag.objects.all()
+        context["search_query"] = self.request.GET.get('q', '')
         return context
 
 class BlogDetails(DetailView):
@@ -45,23 +70,23 @@ class BlogDetails(DetailView):
             comment = form.save(commit=False)
             comment.post = post
             
-            # Asignar el perfil del usuario autenticado
+    
             profile = get_object_or_404(Profile, user=request.user)
             comment.user_published = profile 
             
-            # Obtener el comentario padre (si es una respuesta)
+    
             parent_id = request.POST.get('parent')
             if parent_id:
                 try:
                     parent_comment = Comment.objects.get(id=parent_id)
                     comment.parent = parent_comment
                 except Comment.DoesNotExist:
-                    pass  # Si el comentario padre no existe, se ignora
+                    pass  
             
             comment.save()
             return redirect('blog-details', pk=post.pk)
 
-        # Si el formulario no es válido, renderizar la página con errores
+    
         context = self.get_context_data()
         context['form'] = form
         return self.render_to_response(context)
