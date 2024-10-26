@@ -1,7 +1,11 @@
 {% extends "core/base.html" %} 
 {% block content %} 
 {% load static %}
-
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 <main class="main">
   <!-- Page Title -->
   <div class="page-title">
@@ -54,7 +58,7 @@
                     <i class="bi bi-clock"></i>
                     <a href="#"
                       ><time datetime="2020-01-01"
-                        >{{posts.created_at}}</time
+                        >{{posts.created_at|date:"Y-m-d" }}</time
                       ></a
                     >
                   </li>
@@ -85,11 +89,19 @@
         <section id="blog-author" class="blog-author section">
           <div class="container">
             <div class="author-container d-flex align-items-center">
+              {% if posts.author.avatar %}
               <img
                 src="{{posts.author.avatar.url}}"
                 class="rounded-circle flex-shrink-0"
                 alt=""
               />
+              {% else %}
+              <img
+              src="{% static 'core/assets/img/avatardefect.png' %}"
+              class="rounded-circle flex-shrink-0"
+              alt=""
+            />
+              {% endif %}
               <div>
                 <h3>{{posts.author.fullName}}</h3>
                 <h5>{{posts.author.job}}</h5>
@@ -127,8 +139,8 @@
                   <h5>
                     <a href="">{{ comment.user_published.fullName }}</a>
                   </h5>
-                  <time datetime="{{ comment.created_at }}"
-                    >{{ comment.created_at }}</time
+                  <time datetime="{{ comment.created_at|date:'Y-m-d'  }}"
+                    >{{ comment.created_at|date:"Y-m-d"  }}</time
                   >
                   <p>{{ comment.comment }}</p>
 

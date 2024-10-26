@@ -1,7 +1,11 @@
 {% extends "core/base.html" %} 
 {% block content %} 
 {% load static %}
-
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 <main class="main">
   <!-- Page Title -->
   <div class="page-title">
@@ -63,7 +67,7 @@
                         <i class="bi bi-clock"></i>
                         <a href="{% url 'blog-details' post.id %}"
                           ><time datetime="2022-01-01"
-                            >{{post.created_at}}</time
+                            >{{post.created_at|date:"Y-m-d" }}</time
                           ></a
                         >
                       </li>

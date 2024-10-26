@@ -10,9 +10,6 @@ from .models import Post, Comment, Tag
 from registration.models import Profile
 from .forms  import CommentForm
 
-
-# Create your views here.
-
 class Blog(ListView):
     model = Post
     context_object_name = "posts"
@@ -23,7 +20,6 @@ class Blog(ListView):
         context = super().get_context_data(**kwargs)
         context["tags"] = Tag.objects.all()
 
-        # Agrega la cuenta de comentarios para cada post
         for post in context['posts']:
             post.comment_count = post.comment_set.count()
         
@@ -33,13 +29,14 @@ class BlogSearch(ListView):
     model = Post
     context_object_name = "posts"
     template_name = "blog/blog_search_results.html"
-    paginate_by = 3  
+    paginate_by = 3
 
     def get_queryset(self):
         query = self.request.GET.get('q')
         if query:
             return Post.objects.filter(
-                Q(title__icontains=query)
+                Q(title__icontains=query ) | Q(content__icontains=query)
+
             ).distinct()
         return Post.objects.none()
 
@@ -59,7 +56,7 @@ class BlogDetails(DetailView):
         context['form'] = CommentForm()
         context["tags"] = Tag.objects.all()
         context['comment_count'] = self.object.comment_set.count()
-        context['comments'] = self.object.comment_set.filter(parent__isnull=True)  # Solo los comentarios principales
+        context['comments'] = self.object.comment_set.filter(parent__isnull=True) 
         return context
     
     def post(self, request, *args, **kwargs):
@@ -91,8 +88,6 @@ class BlogDetails(DetailView):
         context['form'] = form
         return self.render_to_response(context)
 
-
-
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Comment
     template_name = "blog/form/comment_delete.html"
@@ -110,3 +105,4 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def get_success_url(self):
         comment = self.get_object()
         return reverse_lazy('blog-details', kwargs={'pk': comment.post.id})
+    
