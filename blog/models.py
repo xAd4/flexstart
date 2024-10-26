@@ -1,7 +1,7 @@
 from django.db import models
-from registration.models import Profile
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from registration.models import Profile
 
 # Method Security 1
 def custom_upload_to(instance, filename):

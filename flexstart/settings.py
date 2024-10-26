@@ -11,8 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-import os
 import environ
+import os
 
 env = environ.Env(
     DEBUG=(bool, False)
@@ -45,13 +45,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core',
-    'contact',
-    'services',
-    'portfolio',
-    'testimonials',
-    'profiles',
     'blog',
+    'contact',
+    'core',
+    'portfolio',
+    'services',
+    'testimonials',
 ]
 
 MIDDLEWARE = [
