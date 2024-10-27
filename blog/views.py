@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.urls import reverse_lazy
-from django.db.models import Q
+from django.db.models import Q, Count, Prefetch
 from django.views.generic import ListView, DetailView, DeleteView, CreateView
 from django.utils.decorators import method_decorator
 from django.contrib.admin.views.decorators import staff_member_required
@@ -16,13 +16,12 @@ class Blog(ListView):
     template_name = "blog/blog.html"
     paginate_by = 3 
 
+    def get_queryset(self):
+        return Post.objects.annotate(comment_count=Count('comment')).select_related('author').prefetch_related('tags').order_by('-comment_count')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["tags"] = Tag.objects.all()
-
-        for post in context['posts']:
-            post.comment_count = post.comment_set.count()
-        
         return context
 
 class BlogSearch(ListView):
@@ -35,9 +34,8 @@ class BlogSearch(ListView):
         query = self.request.GET.get('q')
         if query:
             return Post.objects.filter(
-                Q(title__icontains=query ) | Q(content__icontains=query)
-
-            ).distinct()
+                Q(title__icontains=query) | Q(content__icontains=query)
+            ).select_related('author').prefetch_related('tags').distinct()
         return Post.objects.none()
 
     def get_context_data(self, **kwargs):
@@ -51,12 +49,17 @@ class BlogDetails(DetailView):
     context_object_name = "posts"
     template_name = "blog/blog-details.html"
 
+    def get_object(self):
+        return Post.objects.select_related('author').prefetch_related(
+            Prefetch('comment_set', queryset=Comment.objects.filter(parent__isnull=True).select_related('user_published')),
+            'tags'
+        ).get(pk=self.kwargs['pk'])
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = CommentForm()
         context["tags"] = Tag.objects.all()
-        context['comment_count'] = self.object.comment_set.count()
-        context['comments'] = self.object.comment_set.filter(parent__isnull=True) 
+        context['comments'] = self.object.get_comments()
         return context
     
     def post(self, request, *args, **kwargs):

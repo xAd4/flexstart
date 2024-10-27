@@ -40,6 +40,12 @@ class Post(models.Model):
     def __str__(self):
         return f"Post {self.title} created by {self.author}"
 
+    def get_comment_count(self):
+        return self.comment_set.count()
+    
+    def get_comments(self):
+        return self.comment_set.filter(parent__isnull=True)
+
 
 class Comment(models.Model):
     user_published = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name="User")
@@ -57,8 +63,7 @@ class Comment(models.Model):
         return f"Comment {self.comment[:20]} by {self.user_published}"
 
     def get_replies(self):
-        """Return all replies to this comment"""
-        return self.replies.all()
+        return self.replies.all().order_by('created_at')
 
 
 
